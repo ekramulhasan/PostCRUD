@@ -40,19 +40,20 @@ const addItem = async () => {
 
 const updateItem = async (item) => {
   try {
-    const { title, body_text } = item;
-    await axios.put(
-      `${API_URL}/post/${item.post_id}`,
-      { title, body_text },
+    const { post_id, post_title, post_text } = item;
+    const response = await axios.put(
+      `${API_URL}/post/${post_id}`,
+      { title: post_title, body_text: post_text },
       {
         headers: { Authorization: `Bearer ${API_KEY}` },
       }
     );
-    const index = items.value.findIndex((i) => i.post_id === item.post_id);
+    const index = items.value.findIndex((i) => i.post_id === post_id);
     if (index !== -1) {
-      items.value[index] = { ...item };
+      items.value[index] = { ...response.data };
     }
     editingItem.value = null;
+    await fetchItems(); // Refresh the list after update
   } catch (error) {
     console.error("Error updating item:", error);
   }
@@ -94,7 +95,7 @@ onMounted(fetchItems);
         class="list-group-item d-flex justify-content-between align-items-center"
       >
         <div v-if="editingItem === item.post_id">
-          <input v-model="item.title" class="form-control mb-2" placeholder="Title" />
+          <input v-model="item.post_title" class="form-control mb-2" placeholder="Title" />
           <textarea
             v-model="item.post_text"
             class="form-control mb-2"
