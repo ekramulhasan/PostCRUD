@@ -76,59 +76,48 @@ onMounted(fetchItems);
 </script>
 
 <template>
-  <div class="container mt-5">
-    <h1 class="mb-4">CRUD Operations</h1>
+  <div class="container my-5">
 
-    <div class="mb-3">
-      <input v-model="newItem.user_id" class="form-control mb-2" placeholder="User ID" />
-      <input v-model="newItem.title" class="form-control mb-2" placeholder="Title" />
-      <textarea
-        v-model="newItem.body_text"
-        class="form-control mb-2"
-        placeholder="Body Text"
-      ></textarea>
-      <button @click="addItem" class="btn btn-primary mt-2">Add Item</button>
+    <div class="row">
+      <div class="col-10 m-auto">
+
+        <h1 class="mb-4">CRUD Operations</h1>
+
+        <div class="mb-3">
+          <input v-model="newItem.user_id" class="form-control mb-2" placeholder="User ID" />
+          <input v-model="newItem.title" class="form-control mb-2" placeholder="Title" />
+          <textarea v-model="newItem.body_text" class="form-control mb-2" placeholder="Body Text"></textarea>
+          <button @click="addItem" class="btn btn-primary mt-2">Add Item</button>
+        </div>
+
+        <ul class="list-group">
+          <li v-for="item in items" :key="item.post_id"
+            class="list-group-item d-flex justify-content-between align-items-center">
+            <div v-if="editingItem === item.post_id">
+              <input v-model="item.post_title" class="form-control mb-2" placeholder="Title" />
+              <textarea v-model="item.post_text" class="form-control mb-2" placeholder="Body Text"></textarea>
+            </div>
+            <div v-else>
+              <h5>{{ item.post_title }}</h5>
+              <p>{{ item.post_text }}</p>
+            </div>
+            <div>
+              <button v-if="editingItem === item.post_id" @click="updateItem(item)" class="btn btn-success btn-sm me-2">
+                Save
+              </button>
+              <button v-else @click="editingItem = item.post_id" class="btn btn-warning btn-sm me-2">
+                Edit
+              </button>
+              <button @click="deleteItem(item.post_id)" class="btn btn-danger btn-sm">
+                Delete
+              </button>
+            </div>
+          </li>
+        </ul>
+
+      </div>
     </div>
 
-    <ul class="list-group">
-      <li
-        v-for="item in items"
-        :key="item.post_id"
-        class="list-group-item d-flex justify-content-between align-items-center"
-      >
-        <div v-if="editingItem === item.post_id">
-          <input v-model="item.post_title" class="form-control mb-2" placeholder="Title" />
-          <textarea
-            v-model="item.post_text"
-            class="form-control mb-2"
-            placeholder="Body Text"
-          ></textarea>
-        </div>
-        <div v-else>
-          <h5>{{ item.post_title }}</h5>
-          <p>{{ item.post_text }}</p>
-        </div>
-        <div>
-          <button
-            v-if="editingItem === item.post_id"
-            @click="updateItem(item)"
-            class="btn btn-success btn-sm me-2"
-          >
-            Save
-          </button>
-          <button
-            v-else
-            @click="editingItem = item.post_id"
-            class="btn btn-warning btn-sm me-2"
-          >
-            Edit
-          </button>
-          <button @click="deleteItem(item.post_id)" class="btn btn-danger btn-sm">
-            Delete
-          </button>
-        </div>
-      </li>
-    </ul>
   </div>
 </template>
 
